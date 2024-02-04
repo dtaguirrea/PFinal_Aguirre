@@ -1,0 +1,30 @@
+.header{
+    display: flex;
+    flex-direction: row;
+    height: 12%;
+    background-color: #FFEF00;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 10px;
+    h2{
+        color: blue;
+    }
+    a{
+        display: flex;
+        flex-direction: row;
+        text-decoration: none;
+        color: blue;
+    }
+}
+.content{
+    background-color: cornflowerblue;
+    padding: 0px 80px;
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-evenly;
+    .card{
+        padding: 10px 10px;
+    }
+}
