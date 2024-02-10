@@ -15,10 +15,7 @@ button {
 .header h2 {
   color: blue;
 }
-.header a {
-  display: flex;
-  flex-direction: row;
-  text-decoration: none;
+.header h4 {
   color: blue;
 }
 

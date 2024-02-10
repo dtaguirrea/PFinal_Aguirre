@@ -1,59 +1,111 @@
 //Tienda Virtual//
 //Mercadería
-let mercaderia =[{"id":1,"nombre":"manzana","precio":10},{"id":2,"nombre":"iphone","precio":1000},{"id":3,"nombre":"cocacola","precio":100},{"id":4,"nombre":"tomate","precio":50},{"id":5,"nombre":"perro","precio":1000},{"id":6,"nombre":"queso","precio":70}]
+let mercaderia =[
+    {"id":1,
+    "nombre":"manzana",
+    "precio":100},
 
-//Carrito
-let carrito=[{"id":1,"cantidad":0},{"id":2,"cantidad":0},{"id":3,"cantidad":0},{"id":4,"cantidad":0},{"id":5,"cantidad":0},{"id":6,"cantidad":0}]
+    {"id":2,
+    "nombre":"platano",
+    "precio":800},
 
-//Agregar producto
+    {"id":3,
+    "nombre":"arandano",
+    "precio":500},
+
+    {"id":4,
+    "nombre":"kiwi",
+    "precio":300},
+
+    {"id":5,
+    "nombre":"naranja",
+    "precio":350},
+
+    {"id":6,
+    "nombre":"frutilla",
+    "precio":25}
+]
+let mercaderiaStorage= JSON.stringify(mercaderia)
+sessionStorage.setItem("mercaderia",mercaderiaStorage)
+//Funciones
+//Funcion Agregar producto
 function respuestabotonx(numero){
-    carrito.push({id: numero})
+    let carritoUpdate = JSON.parse(sessionStorage.getItem("carrito"))
+    carritoUpdate.push({"id": numero})
+    sessionStorage.clear
+    sessionStorage.setItem("carrito",JSON.stringify(carritoUpdate))
     Swal.fire({
         position: "top-end",
         icon: "success",
-        title: "Se agregó al carrito",
+        title: "Se agregó al carrito el elemento",
         showConfirmButton: false,
         timer: 1000
     });
 }
-//Botones
-let boton1=document.getElementById("boton1")
-boton1.addEventListener("click",    Swal.fire({
-    title: "Su total a pagar es de:",
-    text: precio,
-    confirmoButtonText: "Ir a pagar"
-  }))
-let boton2=document.getElementById("boton2")
-boton2.addEventListener("click",respuestabotonx(2))
-let boton3=document.getElementById("boton3")
-boton3.addEventListener("click",respuestabotonx(3))
-let boton4=document.getElementById("boton4")
-boton4.addEventListener("click",respuestabotonx(4))
-let boton5=document.getElementById("boton5")
-boton5.addEventListener("click",respuestabotonx(5))
-let boton6=document.getElementById("boton6")
-boton6.addEventListener("click",respuestabotonx(6))
-//Vaciar el carrito
-let vaciar=document.getElementById("vaciar")
-vaciar.addEventListener("click",vaciarcarrito)
+//Funcion Vaciar
 function vaciarcarrito(){
-    for (let i = 0; i < carrito.length ; i++) {
-    carrito[i].cantidad=0
+    sessionStorage.clear()
+    carrito=[]
+    let carritoStorage= JSON.stringify(carrito)
+    sessionStorage.setItem("carrito",carritoStorage)
+    sessionStorage.setItem("mercaderia",mercaderiaStorage)
 }
-}
-//"Pagar"
-let pagar=document.getElementById("pagar")
-pagar.addEventListener("click",pagarcarrito)
+//Funcion Pagar
 function pagarcarrito(){
     let precio=0
-    for (let i = 0; i < carrito.length ; i++) {
-        precio= precio+carrito[i].cantidad*mercaderia[i].precio
+    carritoUpdate= JSON.parse(sessionStorage.getItem("carrito"))
+    mercaderia= JSON.parse(sessionStorage.getItem("mercaderia"))
+    for (let i = 0; i < carritoUpdate.length; i++) {
+        let productoCarrito = carritoUpdate[i];
+        let productoMercaderia = mercaderia.find(producto => producto.id === productoCarrito.id);
+        precio =precio + productoMercaderia.precio;
     }
     if (precio==0){
-        alert("Por favor agregue al menos un producto al carrito")
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Por favor agregue al menos un elemento a su carrito",
+        });
     }
     else{
-        alert("Debe pagar "+precio)
+        Swal.fire({
+            title: "Su total a pagar es de:",
+            text: precio,
+            confirmButtonText: "Ver recetas con estos artículos"
+          });
     }
 
 }
+//Carrito
+let carrito=[]
+let carritoStorage= JSON.stringify(carrito)
+sessionStorage.setItem("carrito",carritoStorage)
+
+//Botones
+let btn1=document.getElementById("boton1")
+btn1.addEventListener("click",() => respuestabotonx(1))
+
+let btn2=document.getElementById("boton2")
+btn2.addEventListener("click",() =>respuestabotonx(2))
+
+let btn3=document.getElementById("boton3")
+btn3.addEventListener("click",() =>respuestabotonx(3))
+
+let btn4=document.getElementById("boton4")
+btn4.addEventListener("click",() =>respuestabotonx(4))
+
+let btn5=document.getElementById("boton5")
+btn5.addEventListener("click",() =>respuestabotonx(5))
+
+let btn6=document.getElementById("boton6")
+btn6.addEventListener("click",() =>respuestabotonx(6))
+//Vaciar el carrito
+let vacio=document.getElementById("vaciar")
+vacio.addEventListener("click",() =>vaciarcarrito())
+//"Pagar"
+let pagar=document.getElementById("pagar")
+pagar.addEventListener("click",pagarcarrito)
+
+//API
+let queryUrl='https://api.spoonacular.com/recipes/findByIngredients?apiKey=8ee72d39a6f54e4682fc513f5867f4ec&ingredients=apples'
+console.log(fetch(queryUrl))
