@@ -2,27 +2,27 @@
 //Mercadería
 let mercaderia =[
     {"id":1,
-    "nombre":"manzana",
+    "nombre":"apple",
     "precio":100},
 
     {"id":2,
-    "nombre":"platano",
+    "nombre":"banana",
     "precio":800},
 
     {"id":3,
-    "nombre":"arandano",
+    "nombre":"blueberries",
     "precio":500},
 
     {"id":4,
-    "nombre":"kiwi",
+    "nombre":"kiwis",
     "precio":300},
 
     {"id":5,
-    "nombre":"naranja",
+    "nombre":"orange",
     "precio":350},
 
     {"id":6,
-    "nombre":"frutilla",
+    "nombre":"strawberries",
     "precio":25}
 ]
 let mercaderiaStorage= JSON.stringify(mercaderia)
@@ -71,10 +71,21 @@ function pagarcarrito(){
         Swal.fire({
             title: "Su total a pagar es de:",
             text: precio,
-            confirmButtonText: "Ver recetas con estos artículos"
+            confirmButtonText: "Ok"
           });
     }
 
+}
+//Funcion ver Carrito
+function vercarro(){
+    ver=[]
+    vercarrito = JSON.parse(sessionStorage.getItem("carrito"))
+    for (let i=0 ; i < 6; i++){
+        if(vercarrito.find(producto => producto.id === i)){
+            ver.push(mercaderia[i-1].nombre)
+        }
+    }
+    return ver.join(",")
 }
 //Carrito
 let carrito=[]
@@ -107,5 +118,25 @@ let pagar=document.getElementById("pagar")
 pagar.addEventListener("click",pagarcarrito)
 
 //API
-let queryUrl='https://api.spoonacular.com/recipes/findByIngredients?apiKey=8ee72d39a6f54e4682fc513f5867f4ec&ingredients=apples'
-console.log(fetch(queryUrl))
+let receta=document.getElementById("recetas")
+receta.addEventListener("click",() =>recetas())
+function recetas(){
+    let queryUrl='https://api.spoonacular.com/recipes/findByIngredients?apiKey=8ee72d39a6f54e4682fc513f5867f4ec&ingredients='+vercarro()+"&number=3"
+    fetch(queryUrl)
+    .then((Response)=>Response.json())
+    .then((recetas)=>{
+        recetas.forEach(recetaind =>{
+            let imagen=recetaind.image;
+            let nombrereceta=recetaind.title;
+            Swal.fire({
+                title: nombrereceta,
+                text: "Ideas para cocinar",
+                imageUrl: imagen,
+                imageWidth: 312,
+                imageHeight: 231,
+                imageAlt: "receta"
+            });
+        })
+    })    
+
+}
